@@ -8,9 +8,7 @@ A [RoamResearch](https://roamresearch.com) helper to pull data about a DOI from 
 
 To include it in a Roam page, simply paste the following (and change the `YOUR_DOI` part for, well, the DOI you want to use).
 
-<div style="font-family:monospace; background-color:#311d3f; padding: 10px; border-radius: 4px;">
-{{iframe: https://equineontology.github.io/roam-crossref/?doi=<code style="color:red">YOUR_DOI</code>}}
-</div>
+`{{iframe: https://equineontology.github.io/roam-crossref/?doi=YOUR_DOI}}`
 
 ## FAQs
 
