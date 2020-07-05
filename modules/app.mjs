@@ -1,4 +1,4 @@
-import { createElement } from "./utils.mjs";
+import { createElement, createCollapse, makeCollapsesAccessible } from "./utils.mjs";
 import { buildReferenceList } from "./refBuilder.mjs";
 
 var doi = getDOI();
@@ -32,8 +32,10 @@ function getCrossrefData() {
       });
       body.appendChild(title);
 
-      const abstract = createElement("p", { innerHTML: message.abstract ?? "" });
-      body.appendChild(abstract);
+      if (message.abstract) {
+        const abstract = createCollapse("abstractCollapse", "Abstract", `</p>${message.abstract ?? ""}</p>`);
+        body.appendChild(abstract);
+      }
 
       if (!message.reference || message.reference.length === 0) {
         const noElements = createElement("p", {
@@ -46,6 +48,8 @@ function getCrossrefData() {
 
       let list = buildReferenceList(message.reference);
       body.appendChild(list);
+
+      makeCollapsesAccessible();
     })
     .catch((error) => {
       console.error("Error:", error);
