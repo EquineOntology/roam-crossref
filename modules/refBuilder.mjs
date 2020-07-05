@@ -10,7 +10,7 @@ export function buildReferenceList(references) {
     const text = ref["volume-title"] ?? ref["journal-title"] ?? ref["DOI"] ?? key;
     if (ref.DOI) {
       subLi = createElement("a", {
-        href: `${document.location.origin}?doi=${ref.DOI}`,
+        href: `${document.location.origin + document.location.pathname}?doi=${ref.DOI}`,
         text: text,
       });
     } else {
