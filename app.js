@@ -47,7 +47,7 @@ function getCrossrefData() {
         const text = ref["volume-title"] ?? ref["journal-title"] ?? ref["DOI"] ?? key;
         if (ref.DOI) {
           subLi = document.createElement("a");
-          subLi.href = `file:///Users/christian/dev/roam-crossref/index.html?doi=${ref.DOI}`;
+          subLi.href = `https://equineontology.github.io/roam-crossref/?doi=${ref.DOI}`;
           subLi.text = text;
         } else {
           subLi = document.createTextNode(text);
