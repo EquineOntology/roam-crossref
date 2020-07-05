@@ -28,6 +28,7 @@ function getCrossrefData() {
       var body = document.getElementById("app");
 
       const title = createElement("h1", {
+        classList: "title",
         textContent: Array.isArray(message.title) ? message.title[0] : message.title,
       });
       body.appendChild(title);
