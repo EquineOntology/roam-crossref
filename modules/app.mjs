@@ -1,5 +1,5 @@
 import { createElement, createCollapse, makeCollapsesAccessible } from "./utils.mjs";
-import { buildReferenceList } from "./refBuilder.mjs";
+import { buildReferenceList } from "./refs.mjs";
 
 var doi = getDOI();
 if (!doi) {
