@@ -17,10 +17,12 @@ jobs:
         run: |
           npm install
           npm run build
-          cp -r ./public tmp/
+          cp -r ./public/ ./tmp
           git fetch origin
           git checkout --track origin/gh-pages
-          cp -r ./tmp/ ./
+t         cd tmp
+          cp -r ./ ../
+          cd ..
           rm -r ./tmp
           git commit -m "Automated build"
           git push
