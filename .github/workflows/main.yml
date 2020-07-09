@@ -20,7 +20,7 @@ jobs:
           cp -r ./public/ ./tmp
           git fetch origin
           git checkout --track origin/gh-pages
-t         cd tmp
+          cd tmp
           cp -r ./ ../
           cd ..
           rm -r ./tmp
