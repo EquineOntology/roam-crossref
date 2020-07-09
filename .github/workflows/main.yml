@@ -18,6 +18,7 @@ jobs:
           npm install
           npm run build
           cp -r ./public tmp/
+          git fetch origin
           git checkout --track origin/gh-pages
           cp -r ./tmp/ ./
           rm -r ./tmp
