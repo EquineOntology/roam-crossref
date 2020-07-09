@@ -1,7 +1,6 @@
 <script>
   import Collapse from "./Collapse.svelte";
   import Reference from "./Reference.svelte";
-import App from "./App.svelte";
   export let doi;
 
   const source = getSourceData();
