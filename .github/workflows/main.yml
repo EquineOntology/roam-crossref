@@ -1,9 +1,7 @@
-name: CI
+name: Deploy to gh-pages
 
 on:
   push:
-    branches: [master]
-  pull_request:
     branches: [master]
 
 jobs:
@@ -13,16 +11,29 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Build app, copy output to gh-pages
+      - name: Build app
         run: |
           npm install
           npm run build
-          cp -r ./public/ ./tmp
+
+      - name: Copy output to tmp folder
+        run: cp -r ./public/ ./tmp
+
+      - name: Checkout gh-pages
+        run: |
           git fetch origin
           git checkout --track origin/gh-pages
+
+      - name: Overwrite older build and remove tmp folder
+        run: |
           cd tmp
           cp -r ./ ../
           cd ..
           rm -r ./tmp
-          git commit -m "Automated build"
+
+      - name: Commit and push new build
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -am "Automated build"
           git push
