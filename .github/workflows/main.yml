@@ -18,7 +18,7 @@ jobs:
           npm install
           npm run build
           cp -r ./public tmp/
-          git checkout gh-pages
+          git checkout --track origin/gh-pages
           cp -r ./tmp/ ./
           rm -r ./tmp
           git commit -m "Automated build"
