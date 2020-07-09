@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build app, copy output to gh-pages
+        run: |
+          npm install
+          npm run build
+          cp -r ./public tmp/
+          git checkout gh-pages
+          cp -r ./tmp/ ./
+          rm -r ./tmp
+          git commit -m "Automated build"
+          git push
