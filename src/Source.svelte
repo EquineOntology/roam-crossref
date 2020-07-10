@@ -6,13 +6,17 @@
 
   export let doi;
 
-  const source = getSourceData();
+  let source;
+  $: source = getSourceData(doi)
 
-  async function getSourceData() {
-    const res = await fetch(`https://api.crossref.org/works/${doi}`);
+  async function getSourceData(sourceDoi) {
+    const res = await fetch(`https://api.crossref.org/works/${sourceDoi}`);
     const data = await res.json();
 
-    updateTitle(data.message.title[0]);
+    const title = data.message.title[0];
+    updateTitle(title);
+
+    const url = document.location.origin + document.location.pathname + `?doi=${sourceDoi}`;
     
     return data.message;
   }
@@ -20,11 +24,8 @@
   function updateTitle(newTitle) {
     currentTitle.update(title => newTitle);
   }
+
 </script>
-
-<style>
-
-</style>
 
 <div>
 {#await source}

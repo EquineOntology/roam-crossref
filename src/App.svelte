@@ -1,17 +1,22 @@
-<script>
+<script>import { prevent_default } from 'svelte/internal';
+
   import { onMount } from 'svelte';
 
   import Nav from './Nav.svelte';
   import Source from "./Source.svelte";
-  import { currentTitle} from './stores'
+  import { currentTitle, mainDoi} from './stores';
 
-  let initialDoi;
+  onMount(() => {
+    getDoiFromUrl();
+    addEventListener('popstate', getDoiFromUrl);
+  });
 
-  onMount(async() => {
+  function getDoiFromUrl() {
     const query = window.location.search;
     const params = new URLSearchParams(query);
-    initialDoi = params.get("doi");
-  })
+    mainDoi.set(params.get("doi"));
+  }
+
 </script>
 
 <style>
@@ -60,8 +65,8 @@
 </svelte:head>
 
 <Nav title={$currentTitle} />
-  {#if initialDoi}
-    <Source doi={initialDoi} />
+  {#if $mainDoi}
+    <Source bind:doi={$mainDoi} />
   {:else}
     <div class="invalid-doi">
       <b>Couldn't find the DOI. Make sure you're writing the iframe as</b>
