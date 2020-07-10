@@ -1,6 +1,9 @@
 <script>
   import Collapse from "./Collapse.svelte";
   import Reference from "./Reference.svelte";
+
+  import { currentTitle } from './stores.js';
+
   export let doi;
 
   const source = getSourceData();
@@ -9,20 +12,24 @@
     const res = await fetch(`https://api.crossref.org/works/${doi}`);
     const data = await res.json();
 
+    updateTitle(data.message.title[0]);
+    
     return data.message;
+  }
+
+  function updateTitle(newTitle) {
+    currentTitle.update(title => newTitle);
   }
 </script>
 
 <style>
-  h1 {
-    text-transform: uppercase;
-  }
+
 </style>
 
+<div>
 {#await source}
   Loading...
 {:then source}
-<h1>{source.title[0]}</h1>
   {#if source.abstract}
     <Collapse id="abstractCollapse" title="Abstract">
       {@html `<p>${source.abstract}</p>`}
@@ -39,3 +46,4 @@
     {/if}
   </ul>
 {/await}
+</div>

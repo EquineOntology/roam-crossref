@@ -1,20 +1,20 @@
 <script>
+  import Nav from './Nav.svelte';
   import Source from "./Source.svelte";
+  import { currentTitle} from './stores'
 
-  let initialDoi = getDoi();
+  import { onMount } from 'svelte';
 
-  function getDoi() {
+  let initialDoi;
+
+  onMount(async() => {
     const query = window.location.search;
     const params = new URLSearchParams(query);
-    return params.get("doi");
-  }
+    initialDoi = params.get("doi");
+  })
 </script>
 
 <style>
-  :global(*) {
-    font-family: sans-serif;
-  }
-
   :global(:root) {
     --darkest: #311d3f;
     --darker: #522546;
@@ -26,15 +26,23 @@
     --transition-time: 0.2s;
   }
 
+  :global(*) {
+    font-family: sans-serif;
+  }
+
+  :global(body) {
+    padding: 0;
+  }
+
   .invalid-doi {
     text-align: center;
   }
+
   .invalid-doi div {
     background-color: palegreen;
     border-radius: 3px;
     width: fit-content;
     margin: 0 auto;
-    padding: 10px;
   }
 </style>
 
@@ -51,7 +59,7 @@
     crossorigin="anonymous" />
 </svelte:head>
 
-<div>
+<Nav title={$currentTitle} />
   {#if initialDoi}
     <Source doi={initialDoi} />
   {:else}
@@ -66,4 +74,3 @@
       </div>
     </div>
   {/if}
-</div>
