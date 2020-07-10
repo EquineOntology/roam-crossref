@@ -1,14 +1,14 @@
 <script>
-    export let title
+  export let title;
 </script>
 
 <style>
-    header {
-        background: white;
-    }
+  header {
+    background: white;
+  }
 
-    header {
-    background: rgb(255,255,255);
+  header {
+    background: rgb(255, 255, 255);
     border-bottom: 1px solid black;
     position: sticky;
     text-align: center;
@@ -18,7 +18,5 @@
 </style>
 
 <header>
-    <h1>
-    {title}
-  </h1>
+  <h1>{title}</h1>
 </header>
