@@ -41,7 +41,7 @@
     border-left: 5px solid currentColor;
     border-top: 5px solid transparent;
     margin-right: 0.7rem;
-    transform: translateY(-2px);
+
     transition: all var(--transition-time);
     vertical-align: middle;
   }
