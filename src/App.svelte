@@ -1,14 +1,15 @@
-<script>import { prevent_default } from 'svelte/internal';
+<script>
+  import { prevent_default } from "svelte/internal";
 
-  import { onMount } from 'svelte';
+  import { onMount } from "svelte";
 
-  import Nav from './Nav.svelte';
+  import Nav from "./Nav.svelte";
   import Source from "./Source.svelte";
-  import { currentTitle, mainDoi} from './stores';
+  import { currentTitle, mainDoi } from "./stores";
 
   onMount(() => {
     getDoiFromUrl();
-    addEventListener('popstate', getDoiFromUrl);
+    addEventListener("popstate", getDoiFromUrl);
   });
 
   function getDoiFromUrl() {
@@ -16,7 +17,6 @@
     const params = new URLSearchParams(query);
     mainDoi.set(params.get("doi"));
   }
-
 </script>
 
 <style>
@@ -65,17 +65,17 @@
 </svelte:head>
 
 <Nav title={$currentTitle} />
-  {#if $mainDoi}
-    <Source bind:doi={$mainDoi} />
-  {:else}
-    <div class="invalid-doi">
-      <b>Couldn't find the DOI. Make sure you're writing the iframe as</b>
-      <div>
-        <code>
-          &lbrace;&lbrace; iframe: https://equineontology.github.io/roam-crossref?doi=
-          <mark>YOUR_DOI_HERE</mark>
-          &rbrace;&rbrace;
-        </code>
-      </div>
+{#if $mainDoi}
+  <Source bind:doi={$mainDoi} />
+{:else}
+  <div class="invalid-doi">
+    <b>Couldn't find the DOI. Make sure you're writing the iframe as</b>
+    <div>
+      <code>
+        &lbrace;&lbrace; iframe: https://equineontology.github.io/roam-crossref?doi=
+        <mark>YOUR_DOI_HERE</mark>
+        &rbrace;&rbrace;
+      </code>
     </div>
-  {/if}
+  </div>
+{/if}

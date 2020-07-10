@@ -1,16 +1,16 @@
 <script>
-  import {onMount} from 'svelte';
-  import {mainDoi} from './stores';
+  import { onMount } from "svelte";
+  import { mainDoi } from "./stores";
 
   export let data;
 
   const doi = data.DOI ?? null;
   const key = data.key;
   let text = data["volume-title"] ?? data["journal-title"] ?? doi ?? key;
-  const href=document.location.origin + document.location.pathname + `?doi=${doi}`;
+  const href = document.location.origin + document.location.pathname + `?doi=${doi}`;
 
   onMount(() => {
-    if(doi) {
+    if (doi) {
       getSourceData();
     }
   });
@@ -19,16 +19,20 @@
     const res = await fetch(`https://api.crossref.org/works/${doi}`);
     const jsonRes = await res.json();
     data = jsonRes.message;
-    
+
     text = data.title[0] ?? text;
   }
 
   function handleClick(e) {
     e.preventDefault();
-    history.pushState({
-            url: href,
-            title: text
-        }, text, href);
+    history.pushState(
+      {
+        url: href,
+        title: text,
+      },
+      text,
+      href
+    );
 
     mainDoi.set(doi);
   }
