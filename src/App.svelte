@@ -1,9 +1,9 @@
 <script>
+  import { onMount } from 'svelte';
+
   import Nav from './Nav.svelte';
   import Source from "./Source.svelte";
   import { currentTitle} from './stores'
-
-  import { onMount } from 'svelte';
 
   let initialDoi;
 
