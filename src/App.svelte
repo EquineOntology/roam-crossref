@@ -21,12 +21,7 @@
 
 <style>
   :global(:root) {
-    --darkest: #311d3f;
-    --darker: #522546;
-    --dark: #88304e;
-    --light: #e23e57;
-    --lighter: #fcb6c0;
-    --lightest: #ffffff;
+    --shadow: rgba(150, 150, 150, 0.1);
 
     --transition-time: 0.2s;
   }
@@ -37,6 +32,10 @@
 
   :global(body) {
     padding: 0;
+  }
+
+  div {
+    background-color: #fdfdfd;
   }
 
   .invalid-doi {
@@ -65,17 +64,19 @@
 </svelte:head>
 
 <Nav title={$currentTitle} />
-{#if $mainDoi}
-  <Source bind:doi={$mainDoi} />
-{:else}
-  <div class="invalid-doi">
-    <b>Couldn't find the DOI. Make sure you're writing the iframe as</b>
-    <div>
-      <code>
-        &lbrace;&lbrace; iframe: https://equineontology.github.io/roam-crossref?doi=
-        <mark>YOUR_DOI_HERE</mark>
-        &rbrace;&rbrace;
-      </code>
+<div>
+  {#if $mainDoi}
+    <Source bind:doi={$mainDoi} />
+  {:else}
+    <div class="invalid-doi">
+      <b>Couldn't find the DOI. Make sure you're writing the iframe as</b>
+      <div>
+        <code>
+          &lbrace;&lbrace; iframe: https://equineontology.github.io/roam-crossref?doi=
+          <mark>YOUR_DOI_HERE</mark>
+          &rbrace;&rbrace;
+        </code>
+      </div>
     </div>
-  </div>
-{/if}
+  {/if}
+</div>

@@ -31,9 +31,11 @@
     Loading...
   {:then source}
     {#if source.abstract}
-      <Collapse id="abstractCollapse" title="Abstract">
-        {@html `<p>${source.abstract}</p>`}
-      </Collapse>
+      <div style="margin-top: 0.75rem; margin-bottom: 0.1rem;">
+        <Collapse id="abstractCollapse" titleOpen="Hide abstract" titleClosed="Show abstract">
+          {@html `${source.abstract}`}
+        </Collapse>
+      </div>
     {/if}
 
     <ul>
@@ -42,7 +44,7 @@
           <Reference data={ref} />
         {/each}
       {:else}
-        <div style="text-align: center;">No references available for this DOI :(</div>
+        <div style="text-align: center; padding: 10px;">No references available for this DOI :(</div>
       {/if}
     </ul>
   {/await}
