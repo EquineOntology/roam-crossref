@@ -1,8 +1,10 @@
 <script>
   export let id;
-  export let title;
+  export let titleOpen;
+  export let titleClosed;
 
   let banner;
+  let isOpen = false;
 
   function handleKeyDown(e) {
     // 32 === spacebar
@@ -16,22 +18,36 @@
 
 <style>
   .collapse {
-    margin-bottom: 1.2rem 0;
+    max-width: 100%;
+    margin-right: 10px;
+    margin-left: 10px;
+    width: fit-content;
   }
 
   .collapse__title {
-    background: var(--darkest);
-    border-radius: 7px;
-    color: var(--lighter);
+    background: #eee;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0px 5px 5px 0 var(--shadow);
+    color: black;
     cursor: pointer;
     display: block;
     padding: 10px;
     text-align: center;
-    transition: all var(--transition-time);
+    transition-property: background, border-radius, box-shadow, transform;
+    transition-duration: var(--transition-time);
+  }
+
+  .collapse.isOpen .collapse__title {
+    border-radius: 10px 10px 0 0;
+    box-shadow: none;
+    transform: translateY(3px);
   }
 
   .collapse__title:hover {
-    color: var(--light);
+    background: #ddd;
+    box-shadow: none;
+    transform: translateY(3px);
   }
 
   .collapse__title::before {
@@ -40,9 +56,8 @@
     border-bottom: 5px solid transparent;
     border-left: 5px solid currentColor;
     border-top: 5px solid transparent;
-    margin-right: 0.7rem;
-
-    transition: all var(--transition-time);
+    margin-right: 10px;
+    transition: transform var(--transition-time);
     vertical-align: middle;
   }
 
@@ -50,42 +65,44 @@
     display: none;
   }
 
-  input:checked + .collapse__title {
+  .collapse.isOpen .collapse__title {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
   }
 
-  input:checked + .collapse__title::before {
+  .collapse.isOpen .collapse__title::before {
     transform: rotate(90deg) translateX(-3px);
   }
 
-  input:checked + .collapse__title + .collapse__content-wrapper {
-    max-height: 100vh;
+  .collapse__content-wrapper {
+    box-shadow: none;
+    max-height: 0;
+    overflow-y: hidden;
+    transition-property: box-shadow, max-height, transform;
+    transition-duration: var(--transition-time), 0.5s, var(--transition-time);
+    transition-timing-function: ease-in-out;
   }
 
-  .collapse__content-wrapper {
-    max-height: 0px;
-    overflow: hidden;
-    transition: max-height 0.25s;
+  .collapse.isOpen .collapse__content-wrapper {
+    max-height: 90vh;
   }
 
   .collapse__content {
-    background: var(--lightest);
     border-style: solid;
-    border-color: var(--lighter);
+    border-color: #ccc;
     border-width: 0 1px 1px 1px;
     border-bottom-left-radius: 7px;
     border-bottom-right-radius: 7px;
-    color: var(--darkest);
-    padding: 0.5rem 1rem;
-    transition: all var(--transition-time);
-    width: auto;
+    color: black;
+    padding: 1rem;
   }
 </style>
 
-<div class="collapse">
-  <input {id} type="checkbox" />
-  <label for={id} class="collapse__title" tabindex="0" bind:this={banner}>{title}</label>
+<div class="collapse" class:isOpen>
+  <input {id} type="checkbox" bind:checked={isOpen} />
+  <label for={id} class="collapse__title" tabindex="0" bind:this={banner}>
+    <span>{isOpen ? titleOpen : titleClosed}</span>
+  </label>
   <div class="collapse__content-wrapper">
     <div class="collapse__content">
       <slot />
