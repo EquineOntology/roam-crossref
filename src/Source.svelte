@@ -28,7 +28,7 @@
 
 <div>
   {#await source}
-    Loading...
+    <div style="margin: 2rem; text-align: center;">Loading...</div>
   {:then source}
     {#if source.abstract}
       <div style="margin-top: 0.75rem; margin-bottom: 0.1rem;">
