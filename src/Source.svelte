@@ -10,7 +10,7 @@
   $: source = getSourceData(doi);
 
   async function getSourceData(sourceDoi) {
-    const res = await fetch(`https://api.crossref.org/works/${sourceDoi}`);
+    const res = await fetch(`https://api.crossref.org/works/${sourceDoi}?mailto=christian.fratta@gmail.com`);
     const data = await res.json();
 
     const title = data.message.title[0];
