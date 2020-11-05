@@ -2,7 +2,8 @@
   import Collapse from "./Collapse.svelte";
   import Reference from "./Reference.svelte";
 
-  import { currentTitle, crossrefCache } from "./stores.js";
+  import { currentTitle } from "./stores.js";
+  import { crossrefCache } from "./libs/crossrefCache";
 
   export let doi;
 
@@ -10,8 +11,7 @@
   $: source = getSourceData(doi);
 
   async function getSourceData(sourceDoi) {
-    const cachedData = extractDoiFromCache(sourceDoi);
-
+    const cachedData = crossrefCache.get(sourceDoi);
     if (cachedData) {
       updateTitle(cachedData.title);
       return cachedData;
@@ -21,40 +21,12 @@
     const data = await res.json();
 
     updateTitle(data.message.title[0]);
-    addDoiToCache(sourceDoi, data.message);
+    crossrefCache.add(sourceDoi, data.message);
     return data.message;
   }
 
   function updateTitle(newTitle) {
     currentTitle.update((title) => newTitle);
-  }
-
-  function extractDoiFromCache(doi) {
-    if (!$crossrefCache[doi]) return null;
-
-    if ($crossrefCache[doi].ts < Date.now()) {
-      removeDoiFromCache(doi);
-      crossrefCache.set($crossrefCache);
-      return null;
-    }
-
-    return $crossrefCache[doi];
-  }
-
-  function addDoiToCache(doi, data) {
-    crossrefCache[doi] = {
-      title: data.title[0],
-      ts: Date.now() + 86400000,
-      ...data,
-    };
-    crossrefCache.set($crossrefCache);
-  }
-
-  function removeDoiFromCache(doi) {
-    if (!crossrefCache[doi]) return;
-
-    delete crossrefCache[doi];
-    crossrefCache.set(crossrefCache);
   }
 </script>
 
