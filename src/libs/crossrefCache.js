@@ -1,7 +1,6 @@
 import { writable, get } from "svelte/store";
 
 function createCache() {
-  console.count("caches");
   let storedCrossrefCache;
   try {
     storedCrossrefCache = JSON.parse(localStorage.getItem("roam-crossref"));
@@ -12,7 +11,6 @@ function createCache() {
   const crossrefCache = writable(storedCrossrefCache);
 
   crossrefCache.subscribe((value) => {
-    console.count("updated");
     localStorage.setItem("roam-crossref", JSON.stringify(value));
   });
 
@@ -21,7 +19,6 @@ function createCache() {
       const doiData = get(crossrefCache, doi);
       if (!doiData) return null;
       if (doiData.ts < Date.now()) {
-        console.info("remove");
         doiCache.remove(doi);
         return null;
       }

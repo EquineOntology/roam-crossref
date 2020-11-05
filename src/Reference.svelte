@@ -25,7 +25,7 @@
 
     const res = await fetch(`https://api.crossref.org/works/${doi}?mailto=christian.fratta@gmail.com`);
     const jsonRes = await res.json();
-    doiData = jsonRes.message;
+    const doiData = jsonRes.message;
     crossrefCache.add(doi, doiData);
 
     text = doiData.title[0] ?? text;
@@ -57,9 +57,5 @@
 </style>
 
 <li>
-  {#if doi}
-    <a {href} on:click={handleClick}>{text}</a>
-  {:else}
-    <span>{text}</span>
-  {/if}
+  {#if doi}<a {href} on:click={handleClick}>{text}</a>{:else}<span>{text}</span>{/if}
 </li>
