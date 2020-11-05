@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { mainDoi } from "./stores";
+  import { crossrefCache } from "./libs/crossrefCache";
 
   export let data;
 
@@ -16,11 +17,18 @@
   });
 
   async function getSourceData() {
-    const res = await fetch(`https://api.crossref.org/works/${doi}`);
-    const jsonRes = await res.json();
-    data = jsonRes.message;
+    const cachedData = crossrefCache.get(doi);
+    if (cachedData) {
+      text = cachedData.title[0] ?? text;
+      return;
+    }
 
-    text = data.title[0] ?? text;
+    const res = await fetch(`https://api.crossref.org/works/${doi}?mailto=christian.fratta@gmail.com`);
+    const jsonRes = await res.json();
+    doiData = jsonRes.message;
+    crossrefCache.add(doi, doiData);
+
+    text = doiData.title[0] ?? text;
   }
 
   function handleClick(e) {
