@@ -5,9 +5,9 @@
 
   export let data;
 
-  const doi = data.DOI ?? null;
+  const doi = data.DOI || null;
   const key = data.key;
-  let text = data["volume-title"] ?? data["journal-title"] ?? doi ?? key;
+  let text = data["volume-title"] || data["journal-title"] || doi || key;
   const href = document.location.origin + document.location.pathname + `?doi=${doi}`;
 
   onMount(() => {
@@ -19,7 +19,7 @@
   async function getSourceData() {
     const cachedData = crossrefCache.get(doi);
     if (cachedData) {
-      text = cachedData.title[0] ?? text;
+      text = cachedData.title[0] || text;
       return;
     }
 
@@ -28,7 +28,7 @@
     const doiData = jsonRes.message;
     crossrefCache.add(doi, doiData);
 
-    text = doiData.title[0] ?? text;
+    text = doiData.title[0] || text;
   }
 
   function handleClick(e) {
