@@ -1,48 +1,67 @@
 <script>
-  import { onMount } from "svelte";
-  import { mainDoi } from "./stores";
   import { crossrefCache } from "./libs/crossrefCache";
+  import Book from "./citations/Book.svelte";
+  import BookChapter from "./citations/BookChapter.svelte";
+  import Journal from "./citations/Journal.svelte";
+  import Unknown from "./citations/Unknown.svelte";
+  import Unstructured from "./citations/Unstructured.svelte";
 
   export let data;
 
-  const doi = data.DOI ?? null;
-  const key = data.key;
-  let text = data["volume-title"] ?? data["journal-title"] ?? doi ?? key;
-  const href = document.location.origin + document.location.pathname + `?doi=${doi}`;
+  const doi = data.DOI || null;
+  let citationData = data;
 
-  onMount(() => {
-    if (doi) {
-      getSourceData();
-    }
-  });
+  let type;
+  selectReferenceType(data);
+
+  if (doi) {
+    getSourceData();
+  }
 
   async function getSourceData() {
     const cachedData = crossrefCache.get(doi);
     if (cachedData) {
-      text = cachedData.title[0] ?? text;
+      cachedData.retrievedFromCache = true;
+      citationData = cachedData;
+      selectReferenceType(citationData);
       return;
     }
-
     const res = await fetch(`https://api.crossref.org/works/${doi}?mailto=christian.fratta@gmail.com`);
     const jsonRes = await res.json();
     const doiData = jsonRes.message;
     crossrefCache.add(doi, doiData);
-
-    text = doiData.title[0] ?? text;
+    doiData.retrievedFromCrossref = true;
+    citationData = doiData;
+    selectReferenceType(citationData);
   }
 
-  function handleClick(e) {
-    e.preventDefault();
-    history.pushState(
-      {
-        url: href,
-        title: text,
-      },
-      text,
-      href
-    );
+  function selectReferenceType(data) {
+    if (data["volume-title"] || data.type === "book" || data.type === "monograph") {
+      type = "book";
+      return;
+    }
 
-    mainDoi.set(doi);
+    if (data.type === "book-chapter") {
+      type = "book-chapter";
+      return;
+    }
+
+    if (data["journal-title"] || data.type === "journal-article") {
+      type = "journal";
+      return;
+    }
+
+    if (data.retrievedFromCache || data.retrievedFromCrossref) {
+      // TODO: add ping to some service allowing me to review the DOI and add the appropriate citation type.
+      debugger;
+    }
+
+    if (data.unstructured) {
+      type = "unstructured";
+      return;
+    }
+
+    type = "unknown";
   }
 </script>
 
@@ -50,12 +69,18 @@
   li {
     padding: 5px 0;
   }
-
-  span {
-    color: gray;
-  }
 </style>
 
 <li>
-  {#if doi}<a {href} on:click={handleClick}>{text}</a>{:else}<span>{text}</span>{/if}
+  {#if type === 'book'}
+    <Book data={citationData} />
+  {:else if type === 'book-chapter'}
+    <BookChapter data={citationData} />
+  {:else if type === 'journal'}
+    <Journal data={citationData} />
+  {:else if type === 'unstructured'}
+    <Unstructured data={citationData} />
+  {:else}
+    <Unknown {doi} />
+  {/if}
 </li>
