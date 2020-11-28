@@ -1,6 +1,4 @@
 <script>
-  import { prevent_default } from "svelte/internal";
-
   import { onMount } from "svelte";
 
   import Nav from "./Nav.svelte";

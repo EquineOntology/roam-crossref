@@ -1,4 +1,8 @@
 /node_modules/
 /public/build/
 
+# Testing
+/coverage/
+
+# OS
 .DS_Store
