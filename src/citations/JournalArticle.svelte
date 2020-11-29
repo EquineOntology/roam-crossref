@@ -41,6 +41,10 @@
       return data["journal-issue"]["published-print"]["date-parts"][0][0];
     }
 
+    if (data.year) {
+      return data.year;
+    }
+
     return null;
   }
 
@@ -59,24 +63,26 @@
   }
 </script>
 
-{#if doi}
-  <a on:click={handleClick} {href}>
-    {#if data.unstructured}
-      {data.unstructured}
-    {:else}
-      {#if authors}{authors}{/if}
-      {#if year}({year}),{/if}
-      {#if title}{title}{/if}
-    {/if}
-  </a>
-{:else}
-  <span>
-    {#if data.unstructured}
-      {data.unstructured}
-    {:else}
-      {#if authors}{authors}{/if}
-      {#if year}({year}),{/if}
-      {#if title}{title}{/if}
-    {/if}
-  </span>
-{/if}
+<li data-citation-type="journal-article">
+  {#if doi}
+    <a on:click={handleClick} {href}>
+      {#if data.unstructured}
+        {data.unstructured}
+      {:else}
+        {#if authors}{authors}{/if}
+        {#if year}({year}),{/if}
+        {#if title}{title}{/if}
+      {/if}
+    </a>
+  {:else}
+    <span>
+      {#if data.unstructured}
+        {data.unstructured}
+      {:else}
+        {#if authors}{authors}{/if}
+        {#if year}({year}),{/if}
+        {#if title}{title}{/if}
+      {/if}
+    </span>
+  {/if}
+</li>

@@ -22,4 +22,6 @@
   }
 </script>
 
-{#if doi}<a on:click={handleClick} {href}> {content} </a>{:else}<span> {content} </span>{/if}
+<li data-citation-type="unstructured">
+  {#if doi}<a on:click={handleClick} {href}> {content} </a>{:else}<span> {content} </span>{/if}
+</li>

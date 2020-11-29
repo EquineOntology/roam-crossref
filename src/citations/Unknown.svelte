@@ -1,8 +1,9 @@
 <script>
   import { mainDoi } from "../stores";
 
-  export let doi;
+  export let data;
 
+  const doi = data.DOI;
   const href = document.location.origin + document.location.pathname + `?doi=${doi}`;
 
   function handleClick(e) {
@@ -20,4 +21,6 @@
   }
 </script>
 
-{#if doi}<a on:click={handleClick} {href}> {doi} </a>{/if}
+{#if doi}
+  <li data-citation-type="unknown"><a on:click={handleClick} {href}> {doi} </a></li>
+{/if}

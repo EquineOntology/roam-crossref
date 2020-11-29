@@ -1,8 +1,9 @@
 <script>
   import { crossrefCache } from "./libs/crossrefCache";
+  import { fetchDoi } from "./libs/crossref";
   import Book from "./citations/Book.svelte";
   import BookChapter from "./citations/BookChapter.svelte";
-  import Journal from "./citations/Journal.svelte";
+  import JournalArticle from "./citations/JournalArticle.svelte";
   import Unknown from "./citations/Unknown.svelte";
   import Unstructured from "./citations/Unstructured.svelte";
 
@@ -10,7 +11,6 @@
 
   const doi = data.DOI || null;
   let citationData = data;
-
   let type;
   selectReferenceType(data);
 
@@ -26,9 +26,7 @@
       selectReferenceType(citationData);
       return;
     }
-    const res = await fetch(`https://api.crossref.org/works/${doi}?mailto=christian.fratta@gmail.com`);
-    const jsonRes = await res.json();
-    const doiData = jsonRes.message;
+    const doiData = fetchDoi(doi);
     crossrefCache.add(doi, doiData);
     doiData.retrievedFromCrossref = true;
     citationData = doiData;
@@ -47,7 +45,7 @@
     }
 
     if (data["journal-title"] || data.type === "journal-article") {
-      type = "journal";
+      type = "journal-article";
       return;
     }
 
@@ -65,22 +63,14 @@
   }
 </script>
 
-<style>
-  li {
-    padding: 5px 0;
-  }
-</style>
-
-<li>
-  {#if type === 'book'}
-    <Book data={citationData} />
-  {:else if type === 'book-chapter'}
-    <BookChapter data={citationData} />
-  {:else if type === 'journal'}
-    <Journal data={citationData} />
-  {:else if type === 'unstructured'}
-    <Unstructured data={citationData} />
-  {:else}
-    <Unknown {doi} />
-  {/if}
-</li>
+{#if type === 'book'}
+  <Book data={citationData} />
+{:else if type === 'book-chapter'}
+  <BookChapter data={citationData} />
+{:else if type === 'journal-article'}
+  <JournalArticle data={citationData} />
+{:else if type === 'unstructured'}
+  <Unstructured data={citationData} />
+{:else}
+  <Unknown data={citationData} />
+{/if}

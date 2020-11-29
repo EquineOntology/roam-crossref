@@ -32,6 +32,10 @@
     padding: 0;
   }
 
+  :global(li) {
+    padding: 5px 0;
+  }
+
   div {
     background-color: #fdfdfd;
   }

@@ -1,0 +1,20 @@
+{
+  "env": {
+    "es2021": true,
+    "browser": true,
+    "node": true,
+    "jest": true
+  },
+  "extends": ["plugin:testing-library/recommended", "prettier"],
+  "ignorePatterns": ["public/build/"],
+  "overrides": [
+    {
+      "files": ["**/*.svelte"],
+      "processor": "svelte3/svelte3"
+    }
+  ],
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "plugins": ["testing-library", "svelte3"]
+}

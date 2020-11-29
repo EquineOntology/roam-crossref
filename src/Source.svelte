@@ -4,6 +4,7 @@
 
   import { currentTitle } from "./stores.js";
   import { crossrefCache } from "./libs/crossrefCache";
+  import { fetchDoi } from "./libs/crossref";
 
   export let doi;
 
@@ -17,12 +18,10 @@
       return cachedData;
     }
 
-    const res = await fetch(`https://api.crossref.org/works/${sourceDoi}?mailto=christian.fratta@gmail.com`);
-    const data = await res.json();
-
-    updateTitle(data.message.title[0]);
-    crossrefCache.add(sourceDoi, data.message);
-    return data.message;
+    const doiData = fetchDoi(sourceDoi);
+    updateTitle(doiData.title[0]);
+    crossrefCache.add(sourceDoi, doiData);
+    return doiData;
   }
 
   function updateTitle(newTitle) {
