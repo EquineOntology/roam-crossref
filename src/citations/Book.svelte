@@ -25,24 +25,26 @@
   }
 </script>
 
-{#if doi}
-  <a on:click={handleClick} {href}>
-    {#if data.unstructured}
-      {data.unstructured}
-    {:else}
-      {#if authors}{authors}{/if}
-      {#if year}({year}),{/if}
-      {#if title}{title}{/if}
-    {/if}
-  </a>
-{:else}
-  <span>
-    {#if data.unstructured}
-      {data.unstructured}
-    {:else}
-      {#if authors}{authors}{/if}
-      {#if year}({year}),{/if}
-      {#if title}{title}{/if}
-    {/if}
-  </span>
-{/if}
+<li data-citation-type="book">
+  {#if doi}
+    <a on:click={handleClick} {href}>
+      {#if data.unstructured}
+        {data.unstructured}
+      {:else}
+        {#if authors}{authors}{/if}
+        {#if year}({year}),{/if}
+        {#if title}{title}{/if}
+      {/if}
+    </a>
+  {:else}
+    <span>
+      {#if data.unstructured}
+        {data.unstructured}
+      {:else}
+        {#if authors}{authors}{/if}
+        {#if year}({year}),{/if}
+        {#if title}{title}{/if}
+      {/if}
+    </span>
+  {/if}
+</li>

@@ -28,7 +28,6 @@ function createCache() {
 
     add: function (doi, data) {
       crossrefCache[doi] = {
-        title: data.title[0],
         ts: Date.now() + 86400000,
         ...data,
       };
@@ -39,6 +38,10 @@ function createCache() {
       if (!get(crossrefCache, doi)) return;
       delete crossrefCache[doi];
       crossrefCache.set(crossrefCache);
+    },
+
+    clear: function () {
+      crossrefCache.set("");
     },
   };
 }
