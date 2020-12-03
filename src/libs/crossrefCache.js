@@ -1,47 +1,40 @@
-import { writable, get } from "svelte/store";
+import localforage from "localforage";
 
 function createCache() {
-  let storedCrossrefCache;
-  try {
-    storedCrossrefCache = JSON.parse(localStorage.getItem("roam-crossref"));
-    storedCrossrefCache = storedCrossrefCache || {};
-  } catch {
-    storedCrossrefCache = {};
-  }
-  const crossrefCache = writable(storedCrossrefCache);
-
-  crossrefCache.subscribe((value) => {
-    localStorage.setItem("roam-crossref", JSON.stringify(value));
+  localforage.config({
+    driver: localforage.INDEXEDDB,
+    name: "roamCrossref",
+    storeName: "roam-crossref",
   });
 
   return {
-    get: function (doi) {
-      const doiData = get(crossrefCache, doi);
-      if (!doiData) return null;
-      if (doiData.ts < Date.now()) {
-        doiCache.remove(doi);
-        return null;
-      }
+    get: async function (doi) {
+      return localforage.getItem(doi).then((res) => {
+        if (!res) return null;
+        if (res.ts < Date.now()) {
+          doiCache.remove(doi);
+          return null;
+        }
 
-      return doiData[doi];
+        return res;
+      });
     },
 
-    add: function (doi, data) {
-      crossrefCache[doi] = {
+    add: function (doi, data, title) {
+      if (!doi) return;
+      localforage.setItem(doi, {
         ts: Date.now() + 86400000,
+        title: title,
         ...data,
-      };
-      crossrefCache.set(crossrefCache);
+      });
     },
 
     remove: function (doi) {
-      if (!get(crossrefCache, doi)) return;
-      delete crossrefCache[doi];
-      crossrefCache.set(crossrefCache);
+      localforage.removeItem(doi);
     },
 
     clear: function () {
-      crossrefCache.set("");
+      localforage.clear();
     },
   };
 }

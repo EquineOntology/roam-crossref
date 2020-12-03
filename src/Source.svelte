@@ -11,17 +11,17 @@
   let source;
   $: source = getSourceData(doi);
 
-  async function getSourceData(sourceDoi) {
-    const cachedData = crossrefCache.get(sourceDoi);
-    if (cachedData) {
-      updateTitle(cachedData.title);
-      return cachedData;
+  async function getSourceData(doi) {
+    const res = await crossrefCache.get(doi);
+    let doiData = await res;
+
+    if (doiData) {
+      updateTitle(doiData.title);
+      return doiData;
     }
 
-    const doiData = fetchDoi(sourceDoi);
-    updateTitle(doiData.title[0]);
-    crossrefCache.add(sourceDoi, doiData);
-    return doiData;
+    doiData = await fetchDoi(doi);
+    updateTitle(doiData.title);
   }
 
   function updateTitle(newTitle) {

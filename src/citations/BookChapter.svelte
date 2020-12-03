@@ -1,26 +1,15 @@
 <script>
   import { mainDoi } from "../stores";
-  import { extractAuthors } from "../libs/citationUtils";
+  import { extractAuthors, extractTitle } from "../libs/citationUtils";
 
   export let data;
 
   const doi = data.DOI || null;
+  const type = "book-chapter";
   const href = document.location.origin + document.location.pathname + `?doi=${doi}`;
-  const title = extractTitle();
+  const title = extractTitle(data, type);
   const authors = extractAuthors(data);
   const year = data.year;
-
-  function extractTitle() {
-    if (data["container-title"]) {
-      return data["container-title"][0];
-    }
-
-    if (data.title && Array.isArray(data.title)) {
-      return data.title[0];
-    }
-
-    return null;
-  }
 
   function handleClick(e) {
     e.preventDefault();
@@ -37,7 +26,8 @@
   }
 </script>
 
-<li data-citation-type="book-chapter">
+<li data-citation-type={type}>
+  📘
   {#if doi}
     <a on:click={handleClick} {href}>
       {#if data.unstructured}
