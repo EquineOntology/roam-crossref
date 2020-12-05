@@ -1,6 +1,5 @@
 <script>
   import { onMount } from "svelte";
-
   import Nav from "./Nav.svelte";
   import Source from "./Source.svelte";
   import { currentTitle, mainDoi } from "./stores";

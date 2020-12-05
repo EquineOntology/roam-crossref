@@ -4,6 +4,7 @@
 
 # Testing
 coverage
+launch.json
 
 # OS
 .DS_Store

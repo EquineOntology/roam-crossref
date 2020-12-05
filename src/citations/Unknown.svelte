@@ -22,5 +22,5 @@
 </script>
 
 {#if doi}
-  <li data-citation-type="unknown"><a on:click={handleClick} {href}> {doi} </a></li>
+  <li data-citation-type="unknown">❓<a on:click={handleClick} {href}>{doi}</a></li>
 {/if}

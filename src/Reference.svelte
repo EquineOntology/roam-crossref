@@ -1,6 +1,7 @@
 <script>
   import { crossrefCache } from "./libs/crossrefCache";
   import { fetchDoi } from "./libs/crossref";
+  import { extractReferenceType } from "./libs/citationUtils";
   import Book from "./citations/Book.svelte";
   import BookChapter from "./citations/BookChapter.svelte";
   import JournalArticle from "./citations/JournalArticle.svelte";
@@ -10,56 +11,30 @@
   export let data;
 
   const doi = data.DOI || null;
-  let citationData = data;
   let type;
-  selectReferenceType(data);
+  let citationData;
+  $: type = extractReferenceType(citationData);
+  citationData = data;
 
   if (doi) {
-    getSourceData();
+    getDoiData();
   }
 
-  async function getSourceData() {
-    const cachedData = crossrefCache.get(doi);
-    if (cachedData) {
-      cachedData.retrievedFromCache = true;
-      citationData = cachedData;
-      selectReferenceType(citationData);
-      return;
-    }
-    const doiData = fetchDoi(doi);
-    crossrefCache.add(doi, doiData);
-    doiData.retrievedFromCrossref = true;
-    citationData = doiData;
-    selectReferenceType(citationData);
-  }
-
-  function selectReferenceType(data) {
-    if (data["volume-title"] || data.type === "book" || data.type === "monograph") {
-      type = "book";
+  async function getDoiData() {
+    let doiData = await crossrefCache.get(doi);
+    if (doiData) {
+      doiData.retrievedFromCache = true;
+      citationData = doiData;
       return;
     }
 
-    if (data.type === "book-chapter") {
-      type = "book-chapter";
-      return;
-    }
-
-    if (data["journal-title"] || data.type === "journal-article") {
-      type = "journal-article";
-      return;
-    }
-
-    if (data.retrievedFromCache || data.retrievedFromCrossref) {
-      // TODO: add ping to some service allowing me to review the DOI and add the appropriate citation type.
+    try {
+      doiData = await fetchDoi(doi);
+      doiData.retrievedFromCrossref = true;
+    } catch (e) {
       debugger;
     }
-
-    if (data.unstructured) {
-      type = "unstructured";
-      return;
-    }
-
-    type = "unknown";
+    citationData = doiData;
   }
 </script>
 

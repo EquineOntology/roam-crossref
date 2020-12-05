@@ -8,19 +8,15 @@
 
   export let doi;
 
-  let source;
-  $: source = getSourceData(doi);
-
-  async function getSourceData(sourceDoi) {
-    const cachedData = crossrefCache.get(sourceDoi);
-    if (cachedData) {
-      updateTitle(cachedData.title);
-      return cachedData;
+  async function getSourceData(doi) {
+    const res = await crossrefCache.get(doi);
+    let doiData = res;
+    if (doiData) {
+      updateTitle(doiData.title);
+      return doiData;
     }
-
-    const doiData = fetchDoi(sourceDoi);
-    updateTitle(doiData.title[0]);
-    crossrefCache.add(sourceDoi, doiData);
+    doiData = await fetchDoi(doi);
+    updateTitle(doiData.title);
     return doiData;
   }
 
@@ -30,7 +26,7 @@
 </script>
 
 <div>
-  {#await source}
+  {#await getSourceData(doi)}
     <div style="margin: 2rem; text-align: center;">Loading...</div>
   {:then source}
     {#if source.abstract}

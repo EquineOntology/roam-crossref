@@ -1,13 +1,12 @@
 import { render, waitFor } from "@testing-library/svelte";
 import Reference from "../Reference.svelte";
 import { fetchDoi } from "../libs/crossref";
-import { crossrefCache } from "../libs/crossrefCache";
 
 jest.mock("../libs/crossref");
 
 describe("Reference", () => {
-  beforeEach(() => {
-    crossrefCache.clear();
+  afterEach(() => {
+    fetchDoi.mockReset();
   });
 
   test("Assign 'book' citation type when 'volume-title' present", async () => {

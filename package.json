@@ -6,11 +6,12 @@
     "dev": "rollup -c -w",
     "start": "sirv public",
     "format": "prettier --write --plugin-search-dir=. ./**/*.svelte",
-    "test": "jest --verbose",
+    "test": "jest",
     "test:watch": "npm run test -- --watch",
     "test:coverage": "npm run test -- --collect-coverage"
   },
   "dependencies": {
+    "localforage": "^1.9.0",
     "sirv-cli": "^1.0.0"
   },
   "devDependencies": {
