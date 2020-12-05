@@ -2,8 +2,9 @@ import { crossrefCache } from "../libs/crossrefCache";
 import { extractReferenceType, extractTitle } from "./citationUtils";
 
 export async function fetchDoi(doi) {
+  let res;
   try {
-    let res = await fetch(`https://api.crossref.org/works/${doi}?mailto=christian.fratta@gmail.com`);
+    res = await fetch(`https://api.crossref.org/works/${doi}?mailto=christian.fratta@gmail.com`);
     res = await res.json();
   } catch (e) {
     console.error(e);
