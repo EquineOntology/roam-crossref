@@ -1,8 +1,5 @@
 <script>
-  import { prevent_default } from "svelte/internal";
-
   import { onMount } from "svelte";
-
   import Nav from "./Nav.svelte";
   import Source from "./Source.svelte";
   import { currentTitle, mainDoi } from "./stores";
@@ -32,6 +29,10 @@
 
   :global(body) {
     padding: 0;
+  }
+
+  :global(li) {
+    padding: 5px 0;
   }
 
   div {

@@ -1,61 +1,51 @@
 <script>
-  import { onMount } from "svelte";
-  import { mainDoi } from "./stores";
   import { crossrefCache } from "./libs/crossrefCache";
+  import { fetchDoi } from "./libs/crossref";
+  import { extractReferenceType } from "./libs/citationUtils";
+  import Book from "./citations/Book.svelte";
+  import BookChapter from "./citations/BookChapter.svelte";
+  import JournalArticle from "./citations/JournalArticle.svelte";
+  import Unknown from "./citations/Unknown.svelte";
+  import Unstructured from "./citations/Unstructured.svelte";
 
   export let data;
 
-  const doi = data.DOI ?? null;
-  const key = data.key;
-  let text = data["volume-title"] ?? data["journal-title"] ?? doi ?? key;
-  const href = document.location.origin + document.location.pathname + `?doi=${doi}`;
+  const doi = data.DOI || null;
+  let type;
+  let citationData;
+  $: type = extractReferenceType(citationData);
+  citationData = data;
 
-  onMount(() => {
-    if (doi) {
-      getSourceData();
-    }
-  });
+  if (doi) {
+    getDoiData();
+  }
 
-  async function getSourceData() {
-    const cachedData = crossrefCache.get(doi);
-    if (cachedData) {
-      text = cachedData.title[0] ?? text;
+  async function getDoiData() {
+    let doiData = await crossrefCache.get(doi);
+    if (doiData) {
+      doiData.retrievedFromCache = true;
+      citationData = doiData;
       return;
     }
 
-    const res = await fetch(`https://api.crossref.org/works/${doi}?mailto=christian.fratta@gmail.com`);
-    const jsonRes = await res.json();
-    const doiData = jsonRes.message;
-    crossrefCache.add(doi, doiData);
-
-    text = doiData.title[0] ?? text;
-  }
-
-  function handleClick(e) {
-    e.preventDefault();
-    history.pushState(
-      {
-        url: href,
-        title: text,
-      },
-      text,
-      href
-    );
-
-    mainDoi.set(doi);
+    try {
+      doiData = await fetchDoi(doi);
+      doiData.retrievedFromCrossref = true;
+    } catch (e) {
+      debugger;
+    }
+    citationData = doiData;
   }
 </script>
 
-<style>
-  li {
-    padding: 5px 0;
-  }
-
-  span {
-    color: gray;
-  }
-</style>
-
-<li>
-  {#if doi}<a {href} on:click={handleClick}>{text}</a>{:else}<span>{text}</span>{/if}
-</li>
+{#if type === 'book'}
+  <Book data={citationData} />
+{:else if type === 'book-chapter'}
+  <BookChapter data={citationData} />
+{:else if type === 'journal-article'}
+  <JournalArticle data={citationData} />
+{:else if type === 'unstructured'}
+  <Unstructured data={citationData} />
+{:else}
+  <Unknown data={citationData} />
+{/if}
