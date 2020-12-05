@@ -12,23 +12,29 @@
 
   const doi = data.DOI || null;
   let type;
+  let citationData;
   $: type = extractReferenceType(citationData);
-  let citationData = data;
+  citationData = data;
 
   if (doi) {
-    crossrefCache.get(doi).then(async function (res) {
-      let doiData = res;
+    getDoiData();
+  }
 
-      if (doiData) {
-        doiData.retrievedFromCache = true;
-        citationData = doiData;
-        return;
-      }
+  async function getDoiData() {
+    let doiData = await crossrefCache.get(doi);
+    if (doiData) {
+      doiData.retrievedFromCache = true;
+      citationData = doiData;
+      return;
+    }
 
+    try {
       doiData = await fetchDoi(doi);
       doiData.retrievedFromCrossref = true;
-      citationData = doiData;
-    });
+    } catch (e) {
+      debugger;
+    }
+    citationData = doiData;
   }
 </script>
 

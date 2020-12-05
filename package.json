@@ -6,7 +6,7 @@
     "dev": "rollup -c -w",
     "start": "sirv public",
     "format": "prettier --write --plugin-search-dir=. ./**/*.svelte",
-    "test": "jest --verbose",
+    "test": "jest",
     "test:watch": "npm run test -- --watch",
     "test:coverage": "npm run test -- --collect-coverage"
   },

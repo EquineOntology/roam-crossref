@@ -1,6 +1,19 @@
 import localforage from "localforage";
 
 function createCache() {
+  try {
+    if (process.env.TESTING) {
+      return {
+        get: function () {
+          return Promise.resolve(null);
+        },
+        add: function () {},
+        remove: function () {},
+        clear: function () {},
+      };
+    }
+  } catch (e) {}
+
   localforage.config({
     driver: localforage.INDEXEDDB,
     name: "roamCrossref",
@@ -9,7 +22,8 @@ function createCache() {
 
   return {
     get: async function (doi) {
-      return localforage.getItem(doi).then((res) => {
+      try {
+        const res = await localforage.getItem(doi);
         if (!res) return null;
         if (res.ts < Date.now()) {
           doiCache.remove(doi);
@@ -17,7 +31,9 @@ function createCache() {
         }
 
         return res;
-      });
+      } catch (e) {
+        return null;
+      }
     },
 
     add: function (doi, data, title) {

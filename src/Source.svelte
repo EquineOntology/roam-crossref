@@ -8,20 +8,16 @@
 
   export let doi;
 
-  let source;
-  $: source = getSourceData(doi);
-
   async function getSourceData(doi) {
     const res = await crossrefCache.get(doi);
-    let doiData = await res;
-
+    let doiData = res;
     if (doiData) {
       updateTitle(doiData.title);
       return doiData;
     }
-
     doiData = await fetchDoi(doi);
     updateTitle(doiData.title);
+    return doiData;
   }
 
   function updateTitle(newTitle) {
@@ -30,7 +26,7 @@
 </script>
 
 <div>
-  {#await source}
+  {#await getSourceData(doi)}
     <div style="margin: 2rem; text-align: center;">Loading...</div>
   {:then source}
     {#if source.abstract}
