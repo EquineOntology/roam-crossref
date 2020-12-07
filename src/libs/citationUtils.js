@@ -60,40 +60,52 @@ export function extractReferenceType(data) {
 
 export function extractTitle(data, type = null) {
   const noTitle = "<no title found>";
-  if (type === "book") {
-    if (data.title) {
-      if (typeof data.title === "string") {
-        return data.title;
-      }
+  let title;
 
-      if (Array.isArray(data.title)) {
-        return data.title[0];
-      }
-    }
-    return data["volume-title"] || data.DOI || noTitle;
+  if (type === "book") {
+    title = getValueHierarchically(data, ["title", "volume-title", "DOI"]);
+    return title || noTitle;
   }
 
   if (type === "book-chapter") {
-    if (data["container-title"]) {
-      return data["container-title"][0];
-    }
-
-    if (data.title && Array.isArray(data.title)) {
-      return data.title[0];
-    }
-
-    return noTitle;
+    title = getValueHierarchically(data, ["container-title", "title", "DOI"]);
+    return title || noTitle;
   }
 
   if (type === "journal-article") {
-    if (data.title) {
-      if (Array.isArray(data.title) && data.title.length > 0) {
-        return data.title[0];
-      }
-    }
-
-    return data["journal-title"] || noTitle;
+    title = getValueHierarchically(data, ["title", "journal-title", "DOI"]);
+    return title || noTitle;
   }
 
-  return data.title || data.DOI || noTitle;
+  if (data.title) {
+    title = extractFromStringOrArray(data.title);
+    if (title) {
+      return title;
+    }
+  }
+
+  return data.DOI || noTitle;
+}
+
+function getValueHierarchically(data, hierarchy) {
+  let value;
+  for (let i = 0; i < hierarchy.length; i++) {
+    value = extractFromStringOrArray(data[hierarchy[i]]);
+    if (value) {
+      return value;
+    }
+  }
+  return null;
+}
+
+function extractFromStringOrArray(element) {
+  if (typeof element === "string") {
+    return element;
+  }
+
+  if (Array.isArray(element) && element.length > 0) {
+    return element[0];
+  }
+
+  return null;
 }
