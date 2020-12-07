@@ -35,6 +35,6 @@
   }
 </script>
 
-<a {href} on:click|preventDefault={handleClick}>
+<a {href} on:click|preventDefault={handleClick} {title}>
   <slot>{title}</slot>
 </a>

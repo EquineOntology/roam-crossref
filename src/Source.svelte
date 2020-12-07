@@ -5,6 +5,7 @@
   import { currentTitle } from "./stores.js";
   import { crossrefCache } from "./libs/crossrefCache";
   import { fetchDoi } from "./libs/crossref";
+  import { extractTitle, extractReferenceType } from "./libs/citationUtils";
 
   export let doi;
 
@@ -12,16 +13,20 @@
     const res = await crossrefCache.get(doi);
     let doiData = res;
     if (doiData) {
-      updateTitle(doiData.title);
+      updateTitle(getTitleFromData(doiData));
       return doiData;
     }
     doiData = await fetchDoi(doi);
-    updateTitle(doiData.title);
+    updateTitle(getTitleFromData(doiData));
     return doiData;
   }
 
+  function getTitleFromData(data) {
+    return extractTitle(data, extractReferenceType(data));
+  }
+
   function updateTitle(newTitle) {
-    currentTitle.update((title) => newTitle);
+    currentTitle.update(() => newTitle);
   }
 </script>
 

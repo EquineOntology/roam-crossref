@@ -2,17 +2,34 @@
   import { onMount } from "svelte";
   import Nav from "./Nav.svelte";
   import Source from "./Source.svelte";
-  import { currentTitle, mainDoi } from "./stores";
+  import { currentTitle, mainDoi, breadcrumbs } from "./stores.js";
 
   onMount(() => {
     getDoiFromUrl();
-    addEventListener("popstate", getDoiFromUrl);
+    addEventListener("popstate", () => {
+      updateBreadcrumbs();
+      getDoiFromUrl();
+    });
   });
 
   function getDoiFromUrl() {
     const query = window.location.search;
     const params = new URLSearchParams(query);
     mainDoi.set(params.get("doi"));
+  }
+
+  function updateBreadcrumbs() {
+    if ($breadcrumbs.length > 0 && $breadcrumbs[$breadcrumbs.length - 1].doi === $mainDoi) {
+      return;
+    }
+
+    breadcrumbs.update((crumbs) => [
+      ...crumbs,
+      {
+        doi: $mainDoi,
+        title: $currentTitle,
+      },
+    ]);
   }
 </script>
 
