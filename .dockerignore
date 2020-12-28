@@ -1,0 +1,11 @@
+Dockerfile
+.eslintrc
+.github
+.gitignore
+.prettierrc
+jest.config.js
+LICENSE
+README.md
+node_modules
+
+src/__tests__
