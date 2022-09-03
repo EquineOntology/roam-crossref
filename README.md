@@ -1,5 +1,3 @@
-[![Project Status: WIP – Initial development is in progress, but it's far from finished](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
-
 # roam-crossref
 
 A [RoamResearch](https://roamresearch.com) helper to pull data about a DOI from [crossref.org](https://crossref.org).
